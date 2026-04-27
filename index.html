@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Numpang Ngopi · CRB</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div id="splash">
+  <div class="splash-logo">
+    <div class="coffee-icon">☕</div>
+    <h1>Numpang Ngopi</h1>
+    <span>CRB · Point of Sale</span>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div id="app" class="hidden">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="topbar-brand">☕ Numpang Ngopi</span>
+    </div>
+    <div class="topbar-right">
+      <button class="icon-btn" id="themeToggle" title="Toggle Theme">🌙</button>
+      <div class="clock" id="clock"></div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- ===== DASHBOARD ===== -->
+    <section id="page-dashboard" class="page active">
+      <div class="page-header">
+        <h2>Dashboard</h2>
+        <small id="today-date"></small>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card accent">
+          <div class="stat-icon">💰</div>
+          <div class="stat-info">
+            <span class="stat-label">Pendapatan Hari Ini</span>
+            <span class="stat-value" id="stat-today">Rp 0</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🧾</div>
+          <div class="stat-info">
+            <span class="stat-label">Transaksi Hari Ini</span>
+            <span class="stat-value" id="stat-trx">0</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📦</div>
+          <div class="stat-info">
+            <span class="stat-label">Total Menu</span>
+            <span class="stat-value" id="stat-menu">0</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📅</div>
+          <div class="stat-info">
+            <span class="stat-label">Pendapatan Bulan Ini</span>
+            <span class="stat-value" id="stat-month">Rp 0</span>
+          </div>
+        </div>
+      </div>
+      <div class="card mt-16">
+        <div class="card-header">
+          <h3>Transaksi Terbaru</h3>
+        </div>
+        <div id="recent-trx-list" class="trx-mini-list">
+          <div class="empty-state">Belum ada transaksi</div>
+        </div>
+      </div>
+      <div class="card mt-16">
+        <div class="card-header"><h3>Menu Terlaris</h3></div>
+        <div id="top-menu-list" class="top-menu-list">
+          <div class="empty-state">Belum ada data</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== BUKU MENU ===== -->
+    <section id="page-menu" class="page">
+      <div class="page-header">
+        <h2>Buku Menu</h2>
+        <button class="btn-primary" id="btnAddMenu">+ Tambah</button>
+      </div>
+      <div class="search-bar">
+        <input type="text" id="menuSearch" placeholder="🔍 Cari menu..." />
+      </div>
+      <div class="category-tabs" id="categoryTabs">
+        <button class="cat-tab active" data-cat="all">Semua</button>
+      </div>
+      <div id="menuList" class="menu-grid"></div>
+    </section>
+
+    <!-- ===== TRANSAKSI ===== -->
+    <section id="page-transaksi" class="page">
+      <div class="page-header">
+        <h2>Transaksi</h2>
+        <span class="badge" id="cartCount">0 item</span>
+      </div>
+      <div class="search-bar">
+        <input type="text" id="trxSearch" placeholder="🔍 Cari menu..." />
+      </div>
+      <div class="category-tabs" id="trxCategoryTabs">
+        <button class="cat-tab active" data-cat="all">Semua</button>
+      </div>
+      <div id="trxMenuList" class="menu-grid-trx"></div>
+      <!-- CART FLOATING -->
+      <div class="cart-panel" id="cartPanel">
+        <div class="cart-header" id="cartToggle">
+          <span>🛒 Keranjang (<span id="cartCountBadge">0</span>)</span>
+          <span class="cart-chevron">▲</span>
+        </div>
+        <div class="cart-body" id="cartBody">
+          <div id="cartItems"></div>
+          <div class="cart-footer">
+            <div class="cart-total">
+              <span>Total</span>
+              <span id="cartTotal">Rp 0</span>
+            </div>
+            <div class="cart-note-row">
+              <input type="text" id="cartNote" placeholder="Catatan / Nama pelanggan..." />
+            </div>
+            <button class="btn-checkout" id="btnCheckout">Bayar Sekarang</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== LAPORAN ===== -->
+    <section id="page-laporan" class="page">
+      <div class="page-header">
+        <h2>Laporan</h2>
+      </div>
+      <div class="filter-row">
+        <select id="reportType">
+          <option value="daily">Harian</option>
+          <option value="monthly">Bulanan</option>
+        </select>
+        <input type="date" id="reportDate" />
+        <button class="btn-primary" id="btnLoadReport">Tampilkan</button>
+      </div>
+      <div class="stats-grid" id="reportStats">
+        <div class="stat-card accent">
+          <div class="stat-icon">💰</div>
+          <div class="stat-info">
+            <span class="stat-label">Total Pendapatan</span>
+            <span class="stat-value" id="rep-income">Rp 0</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🧾</div>
+          <div class="stat-info">
+            <span class="stat-label">Jumlah Transaksi</span>
+            <span class="stat-value" id="rep-count">0</span>
+          </div>
+        </div>
+      </div>
+      <div class="card mt-16">
+        <div class="card-header"><h3>Detail Transaksi</h3></div>
+        <div id="reportList" class="report-list">
+          <div class="empty-state">Pilih tanggal untuk menampilkan laporan</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-page="dashboard">
+      <span class="nav-icon">📊</span>
+      <span>Dashboard</span>
+    </button>
+    <button class="nav-btn" data-page="menu">
+      <span class="nav-icon">📋</span>
+      <span>Menu</span>
+    </button>
+    <button class="nav-btn nav-center" data-page="transaksi">
+      <span class="nav-icon">🛒</span>
+      <span>Transaksi</span>
+    </button>
+    <button class="nav-btn" data-page="laporan">
+      <span class="nav-icon">📈</span>
+      <span>Laporan</span>
+    </button>
+  </nav>
+
+</div>
+
+<!-- MODAL: TAMBAH/EDIT MENU -->
+<div class="modal-overlay hidden" id="menuModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="menuModalTitle">Tambah Menu</h3>
+      <button class="icon-btn" id="closeMenuModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="menuId" />
+      <div class="form-group">
+        <label>Nama Menu</label>
+        <input type="text" id="menuName" placeholder="Contoh: Kopi Susu" />
+      </div>
+      <div class="form-group">
+        <label>Kategori</label>
+        <input type="text" id="menuCategory" placeholder="Contoh: Kopi, Minuman, Makanan" />
+      </div>
+      <div class="form-group">
+        <label>Harga</label>
+        <input type="number" id="menuPrice" placeholder="15000" />
+      </div>
+      <div class="form-group">
+        <label>Emoji / Icon</label>
+        <input type="text" id="menuEmoji" placeholder="☕" maxlength="4" />
+      </div>
+      <div class="form-group">
+        <label>Deskripsi (opsional)</label>
+        <textarea id="menuDesc" placeholder="Deskripsi singkat..."></textarea>
+      </div>
+      <div class="form-group toggle-row">
+        <label>Tersedia</label>
+        <label class="toggle">
+          <input type="checkbox" id="menuAvailable" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" id="cancelMenuModal">Batal</button>
+      <button class="btn-primary" id="saveMenuBtn">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: KONFIRMASI BAYAR -->
+<div class="modal-overlay hidden" id="checkoutModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Konfirmasi Pembayaran</h3>
+      <button class="icon-btn" id="closeCheckoutModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="checkoutItems" class="checkout-items"></div>
+      <div class="checkout-total-row">
+        <span>Total</span>
+        <span id="checkoutTotal" class="total-big">Rp 0</span>
+      </div>
+      <div class="form-group mt-16">
+        <label>Jumlah Bayar</label>
+        <input type="number" id="payAmount" placeholder="Masukkan jumlah bayar..." />
+      </div>
+      <div class="kembalian-row hidden" id="kembalianRow">
+        <span>Kembalian</span>
+        <span id="kembalianAmt" class="kembalian-amt">Rp 0</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" id="cancelCheckout">Batal</button>
+      <button class="btn-checkout" id="confirmPayBtn">✓ Konfirmasi Bayar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast hidden"></div>
+
+<!-- FIREBASE -->
+<script type="module" src="app.js"></script>
+</body>
+</html>
